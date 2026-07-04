@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matematika Praktikasi</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+:root{
+  --paper:#F6F0DC;
+  --paper-deep:#EFE6C6;
+  --line:#DCCFA0;
+  --margin:#C97B7B;
+  --ink:#212C3D;
+  --ink-soft:#5B6B7F;
+  --red:#AE3C2E;
+  --green:#2E6B52;
+  --gold:#A9792F;
+  --paper-card:#FBF7E9;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  background-image:
+    repeating-linear-gradient(to bottom, transparent, transparent 34px, var(--line) 34px, var(--line) 35px);
+  min-height:100vh;
+  font-family:'Inter',sans-serif;
+  color:var(--ink);
+  padding-bottom:60px;
+}
+.margin-line{
+  position:fixed;
+  top:0;bottom:0;left:52px;
+  width:2px;
+  background:var(--margin);
+  opacity:.35;
+  z-index:0;
+}
+@media (max-width:640px){ .margin-line{display:none;} }
+
+.wrap{
+  max-width:760px;
+  margin:0 auto;
+  padding:36px 24px 24px 74px;
+  position:relative;
+  z-index:1;
+}
+@media (max-width:640px){ .wrap{padding:24px 18px;} }
+
+header.hero{margin-bottom:28px;}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--red);
+  margin-bottom:6px;
+}
+h1{
+  font-family:'Fraunces',serif;
+  font-weight:700;
+  font-size:clamp(28px,5vw,40px);
+  margin:0 0 6px 0;
+  line-height:1.05;
+}
+.sub{color:var(--ink-soft); font-size:15px; max-width:52ch;}
+
+.stat-strip{
+  display:flex; gap:18px; flex-wrap:wrap;
+  margin:20px 0 26px 0;
+  font-family:'IBM Plex Mono',monospace;
+}
+.stat{
+  background:var(--paper-card);
+  border:1px solid var(--line);
+  border-left:4px solid var(--gold);
+  padding:8px 14px;
+  border-radius:3px;
+  min-width:96px;
+}
+.stat b{display:block; font-size:20px; font-family:'Fraunces',serif; font-weight:600;}
+.stat span{font-size:11px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em;}
+
+.tabs{
+  display:flex; gap:8px; flex-wrap:wrap;
+  border-bottom:2px solid var(--ink);
+  padding-bottom:0;
+  margin-bottom:26px;
+}
+.tab{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:15px;
+  padding:10px 16px 8px 16px;
+  cursor:pointer;
+  border:1px solid var(--ink);
+  border-bottom:none;
+  border-radius:6px 6px 0 0;
+  background:var(--paper-deep);
+  color:var(--ink-soft);
+  position:relative;
+  top:2px;
+}
+.tab.active{
+  background:var(--paper-card);
+  color:var(--ink);
+  top:0;
+  border-bottom:2px solid var(--paper-card);
+}
+.tab .badge{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  background:var(--red);
+  color:#fff;
+  border-radius:10px;
+  padding:1px 6px;
+  margin-left:6px;
+}
+
+.card{
+  background:var(--paper-card);
+  border:1px solid var(--line);
+  border-radius:8px;
+  box-shadow:0 2px 0 var(--line);
+  padding:26px;
+}
+.qmeta{
+  display:flex; justify-content:space-between; align-items:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--ink-soft);
+  margin-bottom:14px;
+}
+.qnum{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:30px; height:30px; border-radius:50%;
+  border:2px solid var(--red);
+  color:var(--red);
+  font-weight:700;
+  font-family:'Fraunces',serif;
+  margin-right:10px;
+}
+.qtext{
+  font-size:19px;
+  line-height:1.5;
+  margin:6px 0 22px 0;
+  font-weight:500;
+}
+
+.options{ display:flex; flex-direction:column; gap:12px; margin-bottom:22px;}
+.option{
+  display:flex; align-items:center; gap:14px;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  cursor:pointer;
+  background:#fff;
+  transition:background .15s, border-color .15s;
+}
+.option:hover{border-color:var(--ink-soft);}
+.option.selected{ border-color:var(--ink); background:var(--paper-deep); }
+.bubble{
+  flex:0 0 auto;
+  width:30px; height:30px; border-radius:50%;
+  border:2px solid var(--ink);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:600;
+  font-size:13px;
+  color:var(--ink);
+  background:transparent;
+}
+.option.selected .bubble{ background:var(--ink); color:var(--paper-card); }
+.option.correct{ border-color:var(--green); background:#eef6f0; }
+.option.correct .bubble{ background:var(--green); border-color:var(--green); color:#fff; }
+.option.wrong{ border-color:var(--red); background:#fbeceb; }
+.option.wrong .bubble{ background:var(--red); border-color:var(--red); color:#fff; }
+.opt-text{font-size:15px;}
+
+.actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+button{
+  font-family:'Inter',sans-serif;
+  font-weight:600;
+  font-size:14px;
+  padding:11px 20px;
+  border-radius:6px;
+  border:1.5px solid var(--ink);
+  background:var(--ink);
+  color:var(--paper-card);
+  cursor:pointer;
+}
+button.secondary{ background:transparent; color:var(--ink); }
+button:disabled{ opacity:.4; cursor:not-allowed; }
+button.ghost{ border:1.5px solid var(--line); color:var(--ink-soft); background:transparent; }
+
+.feedback{
+  margin-top:18px;
+  padding:14px 16px;
+  border-radius:6px;
+  font-size:14.5px;
+  line-height:1.5;
+  display:none;
+}
+.feedback.show{display:block;}
+.feedback.ok{ background:#eef6f0; border:1px solid var(--green); color:#204d3b;}
+.feedback.no{ background:#fbeceb; border:1px solid var(--red); color:#7c2a20;}
+.feedback .pen{
+  font-family:'Fraunces',serif;
+  font-style:italic;
+  color:var(--red);
+}
+
+.empty{
+  text-align:center; padding:50px 20px; color:var(--ink-soft);
+}
+.empty h3{font-family:'Fraunces',serif; color:var(--ink); font-size:22px;}
+
+.mistake-item{
+  border:1px solid var(--line);
+  border-left:4px solid var(--red);
+  background:var(--paper-card);
+  border-radius:6px;
+  padding:16px 18px;
+  margin-bottom:14px;
+}
+.mistake-item .cat{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px; text-transform:uppercase; letter-spacing:.06em;
+  color:var(--gold);
+}
+.mistake-item .q{ font-size:15.5px; margin:6px 0 10px 0; font-weight:500;}
+.mistake-item .ans-row{ font-size:13.5px; margin-bottom:4px;}
+.mistake-item .ans-row.wrong span.val{ color:var(--red); font-weight:600; text-decoration:line-through; }
+.mistake-item .ans-row.right span.val{ color:var(--green); font-weight:600; }
+.mistake-item .exp{
+  font-family:'Fraunces',serif; font-style:italic; color:var(--ink-soft); font-size:13.5px; margin-top:8px;
+}
+.mistake-item .retry{
+  margin-top:10px;
+}
+button.small{ padding:7px 14px; font-size:13px;}
+
+.footer-note{
+  margin-top:30px;
+  font-size:12.5px;
+  color:var(--ink-soft);
+  text-align:center;
+  font-family:'IBM Plex Mono',monospace;
+}
+.progress-note{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px; color:var(--ink-soft); margin-bottom:14px;
+}
+.loading{ text-align:center; padding:40px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace;}
+</style>
+</head>
+<body>
+<div class="margin-line"></div>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Shaxsiy mashq daftari</div>
+    <h1>Matematika Praktikasi</h1>
+    <div class="sub">Milliy sertifikat, SAT va olimpiada savollarini yeching — javob shu yerning o'zida tekshiriladi, xatolaringiz esa "Xatolarim" bo'limida saqlanib qoladi.</div>
+  </header>
+
+  <div id="statStrip" class="stat-strip"></div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div id="content" class="card"><div class="loading">Yuklanmoqda…</div></div>
+
+  <div class="footer-note">Natijalaringiz shu qurilmada, faqat sizga tegishli holda avtomatik saqlanadi.</div>
+</div>
+
+<script>
+// ---------- DATA ----------
+const CATEGORIES = [
+  { id:'milliy', name:'Milliy Sertifikat', short:'Milliy', questions:[
+    {q:"2x + 5 = 17 tenglamada x ning qiymati nechaga teng?", o:["5","6","7","8"], c:1, e:"2x = 12, demak x = 6."},
+    {q:"Tomonlari 8 sm va 5 sm bo'lgan to'g'ri to'rtburchakning yuzi nechaga teng?", o:["13 sm²","40 sm²","26 sm²","45 sm²"], c:1, e:"Yuza = a × b = 8 × 5 = 40 sm²."},
+    {q:"250 ning 20% i nechaga teng?", o:["25","50","60","75"], c:1, e:"250 × 0.20 = 50."},
+    {q:"x² − 5x + 6 = 0 tenglama ildizlarining yig'indisi nechaga teng?", o:["−5","5","6","−6"], c:1, e:"Vieta teoremasiga ko'ra ildizlar yig'indisi −b/a = 5."},
+    {q:"sin 30° ning qiymati nechaga teng?", o:["1/2","√2/2","√3/2","1"], c:0, e:"Standart burchak qiymatlariga ko'ra sin 30° = 1/2."},
+    {q:"log₂8 ning qiymatini toping.", o:["2","3","4","8"], c:1, e:"2³ = 8, demak log₂8 = 3."},
+    {q:"Tanga ikki marta tashlanganda ikkalasida ham 'gerb' tushish ehtimoli qancha?", o:["1/2","1/3","1/4","1/8"], c:2, e:"Har bir tashlashda ehtimollik 1/2, ikkalasi uchun (1/2)×(1/2) = 1/4."},
+    {q:"Arifmetik progressiyada a₁ = 3, d = 4. a₅ ni toping.", o:["15","19","23","17"], c:1, e:"a₅ = a₁ + 4d = 3 + 16 = 19."},
+    {q:"f(x) = x² funksiyaning x = 3 nuqtadagi hosilasi qanchaga teng?", o:["3","6","9","12"], c:1, e:"f'(x) = 2x, demak f'(3) = 6."},
+    {q:"Avtomobil 60 km/soat tezlikda 2.5 soat yursa, necha km yo'l bosadi?", o:["120 km","150 km","180 km","100 km"], c:1, e:"Yo'l = tezlik × vaqt = 60 × 2.5 = 150 km."},
+  ]},
+  { id:'sat', name:'SAT', short:'SAT', questions:[
+    {q:"3x − 4 = 11 tenglamada x ning qiymatini toping.", o:["3","4","5","6"], c:2, e:"3x = 15, demak x = 5."},
+    {q:"x + y = 10 va x − y = 2 tenglamalar sistemasida x ning qiymati nechaga teng?", o:["4","6","8","2"], c:1, e:"Ikki tenglamani qo'shsak: 2x = 12, x = 6."},
+    {q:"f(x) = 2x + 1 bo'lsa, f(4) nechaga teng?", o:["7","8","9","10"], c:2, e:"f(4) = 2×4 + 1 = 9."},
+    {q:"Radiusi 7 birlik bo'lgan doiraning yuzi qancha (π ≈ 22/7 deb oling)?", o:["154","144","164","49"], c:0, e:"Yuza = πr² = (22/7) × 49 = 154."},
+    {q:"4, 8, 6, 10, 12 sonlarining o'rtacha qiymati (mean) nechaga teng?", o:["6","7","8","9"], c:2, e:"Yig'indi = 40, o'rtacha = 40/5 = 8."},
+    {q:"2³ × 2⁴ ifodaning qiymati nechaga teng?", o:["64","128","256","49"], c:1, e:"2³ × 2⁴ = 2⁷ = 128."},
+    {q:"Xarita masshtabi 1:50000. Xaritada 3 sm bo'lgan masofa haqiqatda necha km ni tashkil qiladi?", o:["1.5 km","15 km","0.5 km","5 km"], c:0, e:"3 × 50000 = 150000 sm = 1.5 km."},
+    {q:"x² − x − 6 = 0 tenglamaning ildizlari qaysi juftlikda to'g'ri ko'rsatilgan?", o:["{2, −3}","{3, −2}","{−2, −3}","{2, 3}"], c:1, e:"(x−3)(x+2) = 0, demak x = 3 yoki x = −2."},
+    {q:"(2, 3) va (6, 11) nuqtalardan o'tuvchi to'g'ri chiziqning qiyaligi (slope) nechaga teng?", o:["1","2","3","4"], c:1, e:"Qiyalik = (11−3)/(6−2) = 8/4 = 2."},
+    {q:"Narxi 80$ bo'lgan tovar 20% ga qimmatlashtirilsa, yangi narxi qancha bo'ladi?", o:["90$","96$","100$","84$"], c:1, e:"80 × 1.20 = 96$."},
+  ]},
+  { id:'olimpiada', name:'Olimpiada', short:'Olimpiada', questions:[
+    {q:"Ixtiyoriy natural n uchun n(n+1) ko'paytmasi doim qanday songa qoldiqsiz bo'linadi?", o:["2 ga","3 ga","4 ga","5 ga"], c:0, e:"n va n+1 dan biri albatta juft son, shuning uchun ko'paytma har doim 2 ga bo'linadi."},
+    {q:"5 xil kitobdan 2 tasini tanlashning (tartib muhim emas) nechta usuli bor?", o:["10","20","5","25"], c:0, e:"C(5,2) = 5!/(2!·3!) = 10."},
+    {q:"1 + 2 + 3 + ... + 100 yig'indisi nechaga teng?", o:["5050","5000","5100","4950"], c:0, e:"Gauss formulasi: n(n+1)/2 = 100×101/2 = 5050."},
+    {q:"a va b musbat sonlar bo'lib, a + b = 10. a·b ning eng katta qiymati nechaga teng?", o:["20","25","30","24"], c:1, e:"Yig'indisi qat'iy bo'lgan sonlarning ko'paytmasi ular teng bo'lganda maksimal: a=b=5, a·b=25."},
+    {q:"Uchburchakning ikki tomoni 5 va 9 birlik. Uchinchi tomon butun son bo'lsa, u nechta xil qiymat qabul qila oladi?", o:["9","8","10","7"], c:0, e:"Uchburchak tengsizligi: 4 < x < 14, demak x = 5,6,...,13 — jami 9 ta qiymat."},
+    {q:"Raqamlari yig'indisi 9 ga teng bo'lgan eng kichik ikki xonali son qaysi?", o:["18","27","90","45"], c:0, e:"10 dan boshlab tekshirsak, 1+8=9 bo'lgan 18 — shartga mos eng kichik son."},
+    {q:"Uchburchakning ikki burchagi 50° va 60°. Uchinchi burchak necha darajaga teng?", o:["70°","60°","50°","80°"], c:0, e:"Uchburchak burchaklari yig'indisi 180°, demak 180 − 50 − 60 = 70°."},
+    {q:"f(x+y) = f(x) + f(y) barcha x, y uchun o'rinli va f(1) = 3. f(5) nechaga teng?", o:["15","8","3","5"], c:0, e:"Bunday funksiya uchun f(n) = n·f(1), demak f(5) = 5×3 = 15."},
+    {q:"13 ta kishidan kamida ikkitasi bir xil oyda tug'ilganligi kafolatlanadi. Bu qaysi tamoyilga misol?", o:["Dirixle (chuvalchang uyasi) prinsipi","Ehtimollar nazariyasi","Kombinatorika formulasi","Matematik induksiya"], c:0, e:"12 oy bor, 13 kishi bo'lsa kamida ikkitasi bitta 'katak'ga (oyga) tushadi — bu Dirixle prinsipi."},
+    {q:"Agar n² juft son bo'lsa, n haqida nima deyish mumkin?", o:["n har doim juft","n har doim toq","Faqat n tub son bo'lsa juft","Aniqlab bo'lmaydi"], c:0, e:"Toq sonning kvadrati doim toq bo'ladi, shuning uchun n² juft bo'lishi uchun n albatta juft bo'lishi kerak."},
+  ]},
+];
+
+const ALL_QUESTIONS = {};
+CATEGORIES.forEach(cat=>{
+  cat.questions.forEach((q,i)=>{
+    const id = cat.id + '-' + i;
+    q.id = id; q.catId = cat.id; q.catName = cat.name;
+    ALL_QUESTIONS[id] = q;
+  });
+});
+
+// ---------- STATE ----------
+let progress = { stats:{}, mistakes:[] }; // stats: {id:{attempts,correct,wrong}}, mistakes: [{id,timestamp,chosen}]
+let currentTab = 'milliy';
+let currentIndex = 0;
+let selectedOption = null;
+let answered = false;
+const STORAGE_KEY = 'math-practice-progress-v1';
+
+async function loadProgress(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      progress = Object.assign({stats:{}, mistakes:[]}, parsed);
+    }
+  }catch(e){
+    // key not found yet or storage unavailable — start fresh
+    progress = { stats:{}, mistakes:[] };
+  }
+}
+
+async function saveProgress(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  }catch(e){
+    console.error('Saqlashda xatolik:', e);
+  }
+}
+
+function letters(i){ return ['A','B','C','D'][i]; }
+
+// ---------- RENDER: STATS STRIP ----------
+function renderStats(){
+  let totalAttempts=0, totalCorrect=0;
+  Object.values(progress.stats).forEach(s=>{ totalAttempts+=s.attempts; totalCorrect+=s.correct; });
+  const accuracy = totalAttempts ? Math.round((totalCorrect/totalAttempts)*100) : 0;
+  const strip = document.getElementById('statStrip');
+  strip.innerHTML = `
+    <div class="stat"><b>${totalAttempts}</b><span>Yechilgan</span></div>
+    <div class="stat"><b>${totalCorrect}</b><span>To'g'ri</span></div>
+    <div class="stat"><b>${accuracy}%</b><span>Aniqlik</span></div>
+    <div class="stat"><b>${progress.mistakes.length}</b><span>Xatolar</span></div>
+  `;
+}
+
+// ---------- RENDER: TABS ----------
+function renderTabs(){
+  const tabs = document.getElementById('tabs');
+  let html = '';
+  CATEGORIES.forEach(cat=>{
+    html += `<div class="tab ${currentTab===cat.id?'active':''}" data-tab="${cat.id}">${cat.name}</div>`;
+  });
+  html += `<div class="tab ${currentTab==='mistakes'?'active':''}" data-tab="mistakes">Xatolarim ${progress.mistakes.length?`<span class="badge">${progress.mistakes.length}</span>`:''}</div>`;
+  tabs.innerHTML = html;
+  tabs.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click', ()=>{
+      currentTab = t.dataset.tab;
+      currentIndex = 0;
+      selectedOption = null;
+      answered = false;
+      render();
+    });
+  });
+}
+
+// ---------- RENDER: CONTENT ----------
+function render(){
+  renderStats();
+  renderTabs();
+  const content = document.getElementById('content');
+
+  if(currentTab==='mistakes'){
+    renderMistakes(content);
+    return;
+  }
+
+  const cat = CATEGORIES.find(c=>c.id===currentTab);
+  const q = cat.questions[currentIndex];
+  const stat = progress.stats[q.id] || {attempts:0, correct:0, wrong:0};
+
+  let optionsHtml = '';
+  q.o.forEach((opt,i)=>{
+    let cls='option';
+    if(answered){
+      if(i===q.c) cls+=' correct';
+      else if(i===selectedOption) cls+=' wrong';
+    } else if(i===selectedOption){
+      cls+=' selected';
+    }
+    optionsHtml += `<div class="${cls}" data-idx="${i}">
+      <div class="bubble">${letters(i)}</div>
+      <div class="opt-text">${opt}</div>
+    </div>`;
+  });
+
+  content.innerHTML = `
+    <div class="qmeta">
+      <span>${cat.name} · Savol ${currentIndex+1} / ${cat.questions.length}</span>
+      <span>${stat.attempts ? `Bu savolni ${stat.attempts} marta yechgansiz` : 'Birinchi urinish'}</span>
+    </div>
+    <div class="qtext"><span class="qnum">${currentIndex+1}</span>${q.q}</div>
+    <div class="options" id="optionsBox">${optionsHtml}</div>
+    <div class="feedback ${answered?'show':''} ${answered ? (selectedOption===q.c?'ok':'no') : ''}" id="feedbackBox">
+      ${answered ? feedbackHtml(q) : ''}
+    </div>
+    <div class="actions" style="margin-top:18px;">
+      <button id="checkBtn" ${selectedOption===null || answered ? 'disabled':''}>Tekshirish</button>
+      <button class="secondary" id="prevBtn" ${currentIndex===0?'disabled':''}>◀ Oldingi</button>
+      <button class="secondary" id="nextBtn" ${currentIndex===cat.questions.length-1?'disabled':''}>Keyingi ▶</button>
+    </div>
+  `;
+
+  content.querySelectorAll('.option').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      if(answered) return;
+      selectedOption = parseInt(el.dataset.idx);
+      render();
+    });
+  });
+  document.getElementById('checkBtn').addEventListener('click', checkAnswer);
+  document.getElementById('prevBtn').addEventListener('click', ()=>{ currentIndex--; selectedOption=null; answered=false; render(); });
+  document.getElementById('nextBtn').addEventListener('click', ()=>{ currentIndex++; selectedOption=null; answered=false; render(); });
+}
+
+function feedbackHtml(q){
+  if(selectedOption===q.c){
+    return `<b>✓ To'g'ri javob!</b><br>${q.e}`;
+  } else {
+    return `<b>✗ Noto'g'ri.</b> To'g'ri javob: <b>${letters(q.c)}) ${q.o[q.c]}</b><br><span class="pen">${q.e}</span>`;
+  }
+}
+
+async function checkAnswer(){
+  if(selectedOption===null || answered) return;
+  answered = true;
+  const cat = CATEGORIES.find(c=>c.id===currentTab);
+  const q = cat.questions[currentIndex];
+  const isCorrect = selectedOption===q.c;
+
+  if(!progress.stats[q.id]) progress.stats[q.id] = {attempts:0, correct:0, wrong:0};
+  progress.stats[q.id].attempts++;
+
+  if(isCorrect){
+    progress.stats[q.id].correct++;
+    // resolved — remove from mistakes journal if present
+    progress.mistakes = progress.mistakes.filter(m=>m.id!==q.id);
+  } else {
+    progress.stats[q.id].wrong++;
+    const entry = {
+      id:q.id, catId:q.catId, catName:q.catName, question:q.q,
+      chosenText:q.o[selectedOption], correctText:q.o[q.c],
+      explanation:q.e, timestamp:Date.now()
+    };
+    progress.mistakes = progress.mistakes.filter(m=>m.id!==q.id);
+    progress.mistakes.unshift(entry);
+  }
+  await saveProgress();
+  render();
+}
+
+// ---------- RENDER: MISTAKES ----------
+function renderMistakes(content){
+  if(progress.mistakes.length===0){
+    content.innerHTML = `<div class="empty">
+      <h3>Xatolar daftaringiz bo'sh</h3>
+      <p>Hozircha noto'g'ri javob berilgan savol yo'q. Mashq qilishda davom eting — agar xato qilsangiz, shu yerda ko'rinadi.</p>
+    </div>`;
+    return;
+  }
+  let html = `<div class="progress-note">Bu yerda oxirgi noto'g'ri javob bergan savollaringiz saqlanadi. To'g'ri yechsangiz, ro'yxatdan avtomatik chiqib ketadi.</div>`;
+  progress.mistakes.forEach(m=>{
+    html += `<div class="mistake-item">
+      <div class="cat">${m.catName}</div>
+      <div class="q">${m.question}</div>
+      <div class="ans-row wrong">Siz belgilagansiz: <span class="val">${m.chosenText}</span></div>
+      <div class="ans-row right">To'g'ri javob: <span class="val">${m.correctText}</span></div>
+      <div class="exp">${m.explanation}</div>
+      <div class="retry"><button class="small secondary" data-retry="${m.id}">Qayta yechish</button></div>
+    </div>`;
+  });
+  content.innerHTML = html;
+  content.querySelectorAll('[data-retry]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.dataset.retry;
+      const q = ALL_QUESTIONS[id];
+      currentTab = q.catId;
+      currentIndex = CATEGORIES.find(c=>c.id===q.catId).questions.findIndex(x=>x.id===id);
+      selectedOption = null;
+      answered = false;
+      render();
+    });
+  });
+}
+
+// ---------- INIT ----------
+(async function init(){
+  await loadProgress();
+  render();
+})();
+</script>
+</body>
+</html>
